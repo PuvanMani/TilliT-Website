@@ -1,9 +1,12 @@
-
+import { BrowserRouter } from "react-router-dom";
+import Layout from "./component/layout/layout";
+import CssBaseline from '@mui/material/CssBaseline';
 function App() {
   return (
-    <div className="App">
-      React
-    </div>
+    <BrowserRouter>
+      <CssBaseline />
+      <Layout />
+    </BrowserRouter>
   );
 }
 
