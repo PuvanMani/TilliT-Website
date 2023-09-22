@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import { Box, Button, Divider, IconButton, InputAdornment, Menu, MenuItem } from '@mui/material';
-import { MyTypography, Search } from '../themes/themes';
+import { Badge, Box, Button, Divider, IconButton, InputAdornment, Menu, MenuItem } from '@mui/material';
+import { MyLink, MyTypography, Search } from '../themes/themes';
 import DrawerComponent from '../drawer/drawer';
 import { Link } from 'react-router-dom';
-import Brand from '../../asserts/images/Tillit PNG 2.png'
+import Brand from '../../asserts/images/Tillit PNG 2.png';
+import { useSelector } from 'react-redux';
+
+
 export default function Navbar() {
+
     const [openDrawer, setOpenDrawer] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
+    const { items } = useSelector(state => state.cartState)
+    const { isLoggedIn } = useSelector(state => state.authState)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -34,11 +39,20 @@ export default function Navbar() {
                         <span class="material-symbols-outlined">menu</span>
                     </IconButton>
                     <Search InputProps={{ startAdornment: (<InputAdornment position="start"><span class="material-symbols-outlined">search</span></InputAdornment>) }} size='small' fullWidth placeholder='Search...' />
-                    <IconButton sx={{ display: { xs: "none", sm: "flex" }, border: "1px solid green", backgroundColor: "green", color: "#FFFF", ":hover": { border: "1px solid green", backgroundColor: "green", color: "#FFFF" }, borderRadius: "6px", ml: 1, py: "3px" }}>
-                        <MyTypography sx={{ mr: 1, p: 0 }}>Cart</MyTypography>
-                        <span class="material-symbols-outlined" style={{ padding: 0 }}>shopping_cart</span>
+                    <Link to='/shopping/cart' style={{ textDecoration: "none" }}>
+                        <Badge badgeContent={items.length} color="error" sx={{ display: { xs: "none", sm: "flex" }, }}>
+                            <IconButton sx={{ display: { xs: "none", sm: "flex" }, border: "1px solid green", backgroundColor: "green", color: "#FFFF", ":hover": { border: "1px solid green", backgroundColor: "green", color: "#FFFF" }, borderRadius: "6px", ml: 1, py: "3px" }}>
+                                <MyTypography sx={{ mr: 1, p: 0 }}>Cart</MyTypography>
+                                <span class="material-symbols-outlined" style={{ padding: 0 }}>shopping_cart</span>
+                            </IconButton>
+                        </Badge>
+                    </Link>
+                    <IconButton onClick={handleClick} sx={{ display: { xs: "block", sm: "none" } }}>
+                        <Badge badgeContent={items.length} color="error" >
+                            <span class="material-symbols-outlined" style={{ fontSize: "26px" }}>account_circle</span>
+                        </Badge>
                     </IconButton>
-                    <IconButton onClick={handleClick}>
+                    <IconButton onClick={handleClick} sx={{ display: { xs: "none", sm: "block" } }}>
                         <span class="material-symbols-outlined" style={{ fontSize: "26px" }}>account_circle</span>
                     </IconButton>
                     {1 > 2 ? <Button sx={{ textTransform: "none", color: "#454545" }}>Login</Button> : ""}
@@ -80,21 +94,34 @@ export default function Navbar() {
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
                 <MenuItem onClick={handleClose}>
-                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>account_circle</span> Profile
+                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>account_circle</span> <MyTypography>Profile</MyTypography>
                 </MenuItem>
-                <MenuItem onClick={handleClose} sx={{ display: { xs: "flex", sm: "none" } }}>
-                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>shopping_cart</span> My Cart
+                <MyLink to='/shopping/cart'>
+                    <MenuItem onClick={handleClose} sx={{ display: { xs: "flex", sm: "none" } }}>
+                        <Badge badgeContent={items.length} color="error" >
+                            <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>shopping_cart</span> <MyTypography>My Cart</MyTypography>
+                        </Badge>
+                    </MenuItem>
+                </MyLink>
+                <MenuItem onClick={handleClose}>
+                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>shopping_bag</span> <MyTypography>My Orders</MyTypography>
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
-                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>shopping_bag</span> My Orders
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
-                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>settings</span> Settings
+                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>settings</span> <MyTypography>Settings</MyTypography>
                 </MenuItem>
                 <Divider variant="middle" />
-                <MenuItem onClick={handleClose}>
-                    <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>logout</span> Logout
-                </MenuItem>
+                {
+                    isLoggedIn ?
+                        <MenuItem onClick={handleClose}>
+                            <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>logout</span> <MyTypography>Logout</MyTypography>
+                        </MenuItem>
+                        :
+                        <Link to='/auth/login' style={{ textDecoration: "none", color: "#000" }}>
+                            <MenuItem onClick={handleClose}>
+                                <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>login</span> <MyTypography>Login</MyTypography>
+                            </MenuItem>
+                        </Link>
+                }
             </Menu>
         </React.Fragment>
     );

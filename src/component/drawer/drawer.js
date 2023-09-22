@@ -1,6 +1,7 @@
 import React from "react";
 import { List, ListItemText, Divider, Drawer, Box, Toolbar, ListItemButton } from "@mui/material";
 import Brand from '../../asserts/images/Tillit PNG 2.png';
+import { Link } from "react-router-dom";
 
 
 
@@ -15,10 +16,12 @@ const DrawerComponent = ({ openDrawer, setOpenDrawer }) => {
                 </Toolbar>
                 <Divider />
                 <List>
-                    {["Home", "My Cart"].map((text, index) => (
-                        <ListItemButton key={text}>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
+                    {[{ name: "Home", path: "/" }, { name: "My Cart", path: "/shopping/cart" }].map((text, index) => (
+                        <Link to={text.path} style={{ textDecoration: "none", color: "#000" }}>
+                            <ListItemButton key={text.name}>
+                                <ListItemText onClick={() => setOpenDrawer(false)} primary={text.name} />
+                            </ListItemButton>
+                        </Link>
                     ))}
                 </List>
             </Box>

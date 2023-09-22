@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { Button, TextField, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 //Primary Button
 export const PrimaryButton = styled(Button)({
@@ -17,10 +18,27 @@ export const Search = styled(TextField)({
         height: 16,
     },
 });
+export const TextBox = styled(TextField)({
+    input: {
+        height: 10,
+        fontSize: "12px",
+        padding: "7px"
+    },
+});
 
 export const MyTypography = styled(Typography)({
     fontFamily: `'Heebo', 'sans-serif'`,
     fontWeight: "500",
+});
+export const SubTypography = styled(Typography)({
+    fontFamily: `'Heebo', 'sans-serif'`,
+    fontWeight: "400",
+    fontSize: "14px",
+    margin: "5px 10px"
+});
+export const MyLink = styled(Link)({
+    textDecoration: "none",
+    color: "#000"
 });
 
 
