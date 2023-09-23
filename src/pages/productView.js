@@ -1,4 +1,4 @@
-import { Backdrop, Box, Button, CircularProgress, Divider, Grid, TextField } from '@mui/material'
+import { Backdrop, Box, Button, ButtonGroup, CircularProgress, Divider, Grid, TextField } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { AddButton, IncreDecreButton, MyTypography, SubTypography } from '../component/themes/themes'
 import { useDispatch, useSelector } from 'react-redux'
@@ -7,7 +7,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import HomeSkeliton from '../component/skeliton.js/homeSkeliton';
 import { productRequest } from '../redux/slices/productSlice';
-import { addCartItem } from '../redux/actions/cartAction';
+import { addCartItem, removeCartItemAction } from '../redux/actions/cartAction';
 
 
 function ProductView() {
@@ -15,7 +15,6 @@ function ProductView() {
     const dispatch = useDispatch();
     const { product, loading, error } = useSelector(state => state.productState);
     const [Quantity, setQuantity] = useState(1)
-    const [QuantityErr, setQuantityErr] = useState(false)
 
     const { items } = useSelector(state => state.cartState);
 
@@ -32,12 +31,20 @@ function ProductView() {
 
     }, [error, id])
 
-    const handilecartItem = (e) => {
-        if (Quantity == "") {
-            setQuantityErr(true)
+    const handilecartItem = () => {
+        dispatch(addCartItem(id, Quantity + 1))
+        toast.success("Item has Added in Cart", { position: 'bottom-center' })
+        setQuantity(Quantity + 1)
+    }
+    const handilecartItemRemove = (e) => {
+        if (Quantity == 1) {
+            dispatch(removeCartItemAction(id))
+            toast.success("This Item has Deleted in Cart")
+            setQuantity(0)
         } else {
-            setQuantityErr(false)
-            dispatch(addCartItem(id, Quantity))
+            dispatch(addCartItem(id, Quantity - 1))
+            toast.success("1 Item has Removed in Cart")
+            setQuantity(Quantity - 1)
         }
     }
 
@@ -94,9 +101,13 @@ function ProductView() {
                         <MyTypography style={{ margin: "5px 0px", display: "flex" }}>₹ {product.Price}</MyTypography>
                         <SubTypography style={{ marginLeft: 0, marginBottom: "10px" }}>{product.NetQuantity} g</SubTypography>
 
-                        <TextField onChange={(e) => setQuantity(e.target.value)} size='small' label='Enter Quantity' placeholder='1' value={Quantity} error={QuantityErr} helperText={QuantityErr ? "Enter Quantity" : ""} /><br />
-                        <AddButton style={{ marginTop: "10px" }} onClick={handilecartItem}>Add</AddButton>
-                        <Divider sx={{ my: "10px" }} />
+                        {
+                            Quantity > 0 ? <ButtonGroup>
+                                <IncreDecreButton onClick={handilecartItemRemove}><span class="material-symbols-outlined" style={{ fontSize: "14px" }}>remove</span></IncreDecreButton>
+                                <AddButton style={{ padding: 0, fontSize: "12px" }} >{Quantity}</AddButton>
+                                <IncreDecreButton onClick={handilecartItem}><span class="material-symbols-outlined" style={{ fontSize: "14px" }}>add</span></IncreDecreButton>
+                            </ButtonGroup> : <AddButton onClick={handilecartItem}>Add</AddButton>
+                        }
 
 
                         <MyTypography>Unit</MyTypography>

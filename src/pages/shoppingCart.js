@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { AddButton, MyTypography } from '../component/themes/themes'
 
 function ShoppingCart() {
+
     const { items, loading } = useSelector(state => state.cartState);
     const { isLoggedIn } = useSelector(state => state.authState);
     const [ItemPrice, setItemPrice] = useState(null)
@@ -18,7 +19,8 @@ function ShoppingCart() {
             setTaxPrice((items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) >= 200 ? items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) : items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) + 40) * 5 / 100)
             setTotalPrice(((items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) >= 200 ? items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) : items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b) + 40) * 5 / 100) + items.map(val => val.Price * val.Quantity).reduce((a, b) => a + b))
         }
-    }, [loading])
+
+    }, [items, loading])
     return (
         <Box sx={{ p: "20px", minHeight: "75vh" }}>
             {items.length > 0 ? <Grid container spacing={2}>
@@ -27,8 +29,8 @@ function ShoppingCart() {
                     <Grid container spacing={2}>
                         {
                             items.map(val => {
-                                return (<Grid item xs={12} sm={6}>
-                                    <ShopingCartCard ProductID={val.ProductID} Title={val.ProductName} Count={val.Quantity} Image={val.Image} Price={val.Price} />
+                                return (<Grid item xs={12} sm={4}>
+                                    <ShopingCartCard ProductID={val.ProductID} ProductName={val.ProductName} Image={val.Image} Price={val.Price} NetQuantity={val.NetQuantity} />
                                 </Grid>)
                             })
                         }

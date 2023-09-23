@@ -28,11 +28,19 @@ const AuthSlice = createSlice({
                 error: action.payload.response.data.message
             }
         },
+        authLogout(state, action) {
+            localStorage.removeItem('token')
+            return {
+                loading: false,
+                isLoggedIn: false,
+                otp: null,
+            }
+        },
     }
 })
 
 const { actions, reducer } = AuthSlice;
 
-export const { authFail, authRequest, authSuccess } = actions;
+export const { authFail, authRequest, authSuccess, authLogout } = actions;
 
 export default reducer;

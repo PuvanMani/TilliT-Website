@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import { useDispatch, useSelector } from "react-redux"
 import { login } from "../redux/actions/authAction";
+import { toast } from "react-toastify";
 
 function LoginPage() {
     const nav = useNavigate();
@@ -18,7 +19,7 @@ function LoginPage() {
     const [Password, setPassword] = useState("");
     const [pass, setPass] = useState(true);
     const dispatch = useDispatch();
-    const { isLoggedIn } = useSelector(state => state.authState)
+    const { isLoggedIn, error } = useSelector(state => state.authState)
 
     const [err, setErr] = useState({
         Email: false,
@@ -46,6 +47,9 @@ function LoginPage() {
     useEffect(() => {
         if (isLoggedIn) {
             nav('/')
+        }
+        if (error) {
+            toast.error(error)
         }
     }, [isLoggedIn])
     return (

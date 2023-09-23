@@ -10,7 +10,7 @@ function Layout() {
             <Grid item xs={12}>
                 <Navbar />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sx={{ mt: "60px" }}>
                 <Routes>
                     {PageRoute.map(val => <Route path={val.Path} element={val.Component} />)}
                 </Routes>

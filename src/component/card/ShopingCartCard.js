@@ -4,75 +4,64 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { AddButton, TextBox } from '../themes/themes';
+import { AddButton, IncreDecreButton, MyTypography, TextBox } from '../themes/themes';
 import { useDispatch, useSelector } from 'react-redux';
 import { addCartItem, removeCartItemAction } from '../../redux/actions/cartAction';
-import { IconButton } from '@mui/material';
+import { ButtonGroup, IconButton } from '@mui/material';
+import { toast } from 'react-toastify';
 
 
 
-export default function ShopingCartCard({ Title, Image, Price, Count, ProductID }) {
+export default function ShopingCartCard({ ProductName, NetQuantity, Image, Price, ProductID }) {
 
     const dispatch = useDispatch()
     const { items } = useSelector(state => state.cartState)
     const [Quantity, setQuantity] = useState(0);
 
-    const [QuantityErr, setQuantityErr] = useState(false);
-
-    const handilecartItem = () => {
-        if (Quantity == "" || Quantity == 0) {
-            setQuantityErr(true)
-        } else {
-            setQuantityErr(false)
-            dispatch(addCartItem(ProductID, Quantity))
-        }
-    }
     const removeCartItem = () => {
         dispatch(removeCartItemAction(ProductID))
     }
-
+    const handilecartItem = (e) => {
+        dispatch(addCartItem(ProductID, Quantity + 1))
+        toast.success("Item has Added in Cart")
+    }
+    const handilecartItemRemove = (e) => {
+        if (Quantity == 1) {
+            dispatch(removeCartItemAction(ProductID))
+            toast.success("This Item has Deleted in Cart")
+            setQuantity(0)
+        } else {
+            dispatch(addCartItem(ProductID, Quantity - 1))
+            toast.success("1 Item has Removed in Cart")
+        }
+    }
     useEffect(() => {
         const CartQuantity = items?.find(i => i.ProductID == ProductID)
         if (CartQuantity) {
             setQuantity(CartQuantity.Quantity)
         }
-
-    }, [dispatch])
+    }, [items])
     return (
-        <Card sx={{ display: 'flex', boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px", minHeight: "210px", flexDirection: { xs: "column", md: "row" }, justifyContent: { xs: "flex-start", sm: "space-between" }, alignItems: "center" }}>
+        <Card sx={{ display: 'flex', boxShadow: "rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px", flexDirection: { xs: "column", md: "row" }, justifyContent: { xs: "center", sm: "space-between" }, alignItems: "center" }}>
             <CardMedia
-                component="img"
-                sx={{ minWidth: { xs: 150, sm: 150 }, height: 200 }}
-                image={Image}
-                alt="Live from space album cover"
-            />
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", width: "100%" }}>
+                sx={{ width: "90%", height: "100%" }}
+            >
+                <img src={Image} alt={ProductName} width='100%' height="100%" style={{ objectFit: "cover" }} />
+            </CardMedia>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
                 <CardContent sx={{ width: "100%" }}>
-                    <Typography sx={{ fontSize: "14px", mb: .5 }}>Name: {Title}</Typography>
-                    <Typography sx={{ fontSize: "14px", mb: .5 }}>Price : ₹ {Price}</Typography>
-                    <Typography sx={{ fontSize: "14px", mb: .5 }}>Count <TextBox onChange={(e) => {
-                        if (e.target.value == "") {
-                            setQuantityErr(true)
-                            setQuantity(e.target.value)
-                        } else if (e.target.value < 1) {
-                            setQuantity(e.target.value)
-                            setQuantityErr(false)
-                        }
-                        else {
-                            setQuantityErr(false)
-                            setQuantity(e.target.value)
-                        }
-                    }} value={Quantity} error={QuantityErr} helperText={QuantityErr ? "Enter Quantity" : ""} size='small' placeholder='Enter Quantity then Add' /></Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                        <AddButton onClick={handilecartItem}>Add</AddButton>
-                        <IconButton style={{ p: 0, textAlign: "right" }} onClick={removeCartItem}>
-                            <span class="material-symbols-outlined" style={{ backgroundColor: "red", color: "#FFF", padding: 2, borderRadius: "6px" }}>
-                                close
-                            </span>
-                        </IconButton>
+                    <Typography sx={{ fontSize: "14px", mb: .5 }}>{ProductName}</Typography>
+                    <MyTypography sx={{ fontSize: "16px", mb: .5 }}>₹ {Price}</MyTypography>
+                    <Typography sx={{ fontSize: "14px", mb: .5 }}>{NetQuantity} g</Typography>
+                    <Box sx={{ display: "flex", flexDirection: "row-reverse", justifyContent: "space-between", alignItems: 'center' }}>
+                        <Typography sx={{ fontSize: "14px", mb: .5, display: "flex", justifyContent: "space-between", alignItems: "center" }}><span class="material-symbols-outlined" onClick={removeCartItem} style={{ padding: "2px", marginLeft: "10px", color: "red", border: "1px solid red", borderRadius: "3px" }}>delete_forever</span></Typography>
+                        <ButtonGroup>
+                            <IncreDecreButton onClick={handilecartItemRemove}><span class="material-symbols-outlined" style={{ fontSize: "14px" }}>remove</span></IncreDecreButton>
+                            <AddButton style={{ padding: 0, fontSize: "12px" }} >{Quantity}</AddButton>
+                            <IncreDecreButton onClick={handilecartItem}><span class="material-symbols-outlined" style={{ fontSize: "14px" }}>add</span></IncreDecreButton>
+                        </ButtonGroup>
                     </Box>
                 </CardContent>
-
             </Box>
         </Card>
     );

@@ -4,31 +4,48 @@ import Toolbar from '@mui/material/Toolbar';
 import { Badge, Box, Button, Divider, IconButton, InputAdornment, Menu, MenuItem } from '@mui/material';
 import { MyLink, MyTypography, Search } from '../themes/themes';
 import DrawerComponent from '../drawer/drawer';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Brand from '../../asserts/images/Tillit PNG 2.png';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../redux/actions/authAction';
 
 
 export default function Navbar() {
-
+    const nav = useNavigate()
     const [openDrawer, setOpenDrawer] = useState(false);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const { items } = useSelector(state => state.cartState)
     const { isLoggedIn } = useSelector(state => state.authState)
+    const [SearchKeyWord, setSearchKeyWord] = useState('')
+    const dispatch = useDispatch()
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const logoutUser = () => {
+        setAnchorEl(null);
+        dispatch(logout)
+    };
 
     const handleDrawer = () => {
         setOpenDrawer(true)
     }
+    const keyPress = (e) => {
+        if (e.key === 'Enter') {
+            if (SearchKeyWord == "") {
+
+            } else {
+                nav(`/search?action=search&keyword=${SearchKeyWord}`);
+            }
+        }
+    }
     return (
         <React.Fragment>
-            <AppBar position='static' sx={{ backgroundColor: "#fff", height: "65px" }}>
+
+            <AppBar sx={{ backgroundColor: "#fff", height: "65px", position: "fixed", top: 0 }}>
                 <Toolbar sx={{ p: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Link to='/'>
                         <Box sx={{ display: { xs: 'none', sm: "block" }, width: "80px", mr: 1, height: "100%" }}>
@@ -38,7 +55,7 @@ export default function Navbar() {
                     <IconButton onClick={handleDrawer} sx={{ display: { xs: 'block', sm: "none" } }}>
                         <span class="material-symbols-outlined">menu</span>
                     </IconButton>
-                    <Search InputProps={{ startAdornment: (<InputAdornment position="start"><span class="material-symbols-outlined">search</span></InputAdornment>) }} size='small' fullWidth placeholder='Search...' />
+                    <Search onKeyDown={keyPress} onChange={(e) => setSearchKeyWord(e.target.value)} InputProps={{ startAdornment: (<InputAdornment position="start"><span class="material-symbols-outlined">search</span></InputAdornment>) }} size='small' fullWidth placeholder='Search...' />
                     <Link to='/shopping/cart' style={{ textDecoration: "none" }}>
                         <Badge badgeContent={items.length} color="error" sx={{ display: { xs: "none", sm: "flex" }, }}>
                             <IconButton sx={{ display: { xs: "none", sm: "flex" }, border: "1px solid green", backgroundColor: "green", color: "#FFFF", ":hover": { border: "1px solid green", backgroundColor: "green", color: "#FFFF" }, borderRadius: "6px", ml: 1, py: "3px" }}>
@@ -112,7 +129,7 @@ export default function Navbar() {
                 <Divider variant="middle" />
                 {
                     isLoggedIn ?
-                        <MenuItem onClick={handleClose}>
+                        <MenuItem onClick={logoutUser}>
                             <span class="material-symbols-outlined" style={{ marginRight: "10px" }}>logout</span> <MyTypography>Logout</MyTypography>
                         </MenuItem>
                         :

@@ -1,5 +1,6 @@
 import BuyPage from "../../pages/BuyPage";
 import LoginPage from "../../pages/Login";
+import SearchList from "../../pages/SearchResult";
 import SignUp from "../../pages/SignUp";
 import Home from "../../pages/home";
 import ProductView from "../../pages/productView";
@@ -41,5 +42,11 @@ export const PageRoute = [
         "Path": "/shopping/confirmorder",
         "Icon": "order",
         "Component": <BuyPage />
+    },
+    {
+        "Name": "Search List",
+        "Path": "/search",
+        "Icon": "search",
+        "Component": <SearchList />
     },
 ]

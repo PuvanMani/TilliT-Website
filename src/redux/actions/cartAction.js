@@ -14,6 +14,7 @@ export const addCartItem = (id, quantity) => async (dispatch) => {
             "Price": data.product.Price,
             "Image": data.product.Images[0].Image,
             "Quantity": Number(quantity),
+            "NetQuantity": Number(data.product.NetQuantity),
         }));
 
     } catch (err) {
